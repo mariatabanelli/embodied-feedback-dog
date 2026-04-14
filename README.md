@@ -1,6 +1,6 @@
 # Embodied Feedback Dog
 
-An interactive robotics and real-time visual system using a SunFounder PiDog, Raspberry Pi, OSC, and TouchDesigner. The physical robot acts as a sensing body, while a particle-based Labrador visualises the robot's behavioural condition in real time.
+An interactive robotics and real-time visual system using a PiDog, Raspberry Pi, OSC, and TouchDesigner. The physical robot acts as a sensing body, while a particle-based Labrador visualises the robot's behavioural condition in real time.
 
 Rather than treating a person as a direct trigger for visual effects, the project frames the physical PiDog and the digital particle dog as one feedback system:
 

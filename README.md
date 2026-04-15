@@ -1,6 +1,6 @@
 # Embodied Feedback Dog
 
-An interactive robotics and real-time visual system using a PiDog, Raspberry Pi, OSC, and TouchDesigner. The physical robot acts as a sensing body, while a particle-based Labrador visualises the robot's behavioural condition in real time.
+An interactive robotics and real-time visual system using a SunFounder PiDog, Raspberry Pi, OSC, and TouchDesigner. The physical robot acts as a sensing body, while a particle-based Labrador visualises the robot's behavioural condition in real time.
 
 Rather than treating a person as a direct trigger for visual effects, the project frames the physical PiDog and the digital particle dog as one feedback system:
 
@@ -37,7 +37,7 @@ SunFounder PiDog / Raspberry Pi
   dual touch sensor
   IMU accelerometer + gyroscope
   sound direction sensor, tested but optional
-  camera, tested as future extension
+  camera, tested as face-tracking extension
         |
         v
 Python behaviour bridge
@@ -70,7 +70,7 @@ FBX Labrador particle system
 | The dog is touched or petted | Dual touch sensor | `contact`, `stability` | Particles calm down through reduced turbulence and increased drag. |
 | The dog is tilted, lifted, or disturbed | IMU accelerometer/gyroscope | `agitation`, `fragmentation` | The particle body becomes less coherent and more disturbed. |
 | Sound direction | PiDog ears | `sound_dir`, `sound_present` | Tested as an optional attention/orientation layer. |
-| Camera | PiDog camera | Future extension | Not used in the main live loop; intended for later face/gaze/gesture experiments. |
+| Camera | PiDog camera | Face tracking extension | Tested as a separate camera stream/head-tracking demo. |
 
 ## Materials And Tools
 
@@ -85,7 +85,7 @@ FBX Labrador particle system
 - PiDog dual touch sensor
 - PiDog IMU accelerometer/gyroscope
 - PiDog sound direction sensor, tested as optional input
-- PiDog camera, tested separately as future extension
+- PiDog camera, tested as a separate face-tracking extension
 
 ## Repository Contents
 
@@ -100,6 +100,12 @@ scripts/pidog_sensor_check.py
 ```
 
 Utility script for testing PiDog sensors and camera detection on the Raspberry Pi.
+
+```text
+scripts/7_face_track_no_ears.py
+```
+
+Camera stream and face-tracking demo adapted from the SunFounder face-tracking example. This version removes sound-direction/ears input to avoid `GPIO busy` conflicts while keeping the camera stream and gentle head tracking.
 
 ```text
 TouchDesigner_OSC_Setup.md
@@ -176,6 +182,57 @@ To test without the physical PiDog sensors, run the simulation mode:
 python3 scripts/pidog_touchdesigner_bridge.py --host 127.0.0.1 --port 9000 --simulate --count 200
 ```
 
+## Camera And Face Tracking
+
+The PiDog camera was repaired and tested successfully. Camera detection on the Raspberry Pi showed an `ov5647` camera module:
+
+```text
+0 : ov5647 [2592x1944 10-bit GBRG]
+```
+
+The stock SunFounder `7_face_track.py` example started the camera stream, but then hit a `GPIO busy` error because it also uses the ears/sound-direction sensor. To keep the camera test stable, this repository includes a simplified version:
+
+```text
+scripts/7_face_track_no_ears.py
+```
+
+This version keeps:
+
+- PiDog camera stream
+- face detection
+- gentle head tracking
+- RGB strip feedback
+
+and removes:
+
+- ears/sound-direction reads
+
+Copy it to the PiDog:
+
+```sh
+scp "scripts/7_face_track_no_ears.py" aidog@mariadog.local:~/pidog/examples/7_face_track_no_ears.py
+```
+
+Run it on the Raspberry Pi:
+
+```sh
+sudo python3 ~/pidog/examples/7_face_track_no_ears.py
+```
+
+Open the camera stream from a browser on the same network:
+
+```text
+http://192.168.0.111:9000/mjpg
+```
+
+Use the PiDog's current IP address if it changes:
+
+```sh
+hostname -I
+```
+
+The camera/face-tracking script is intentionally kept separate from the TouchDesigner sensor bridge so the project can avoid hardware conflicts and keep each demonstration reliable.
+
 ## TouchDesigner Mapping
 
 The live channels are mapped to the particle Labrador through parameter expressions. Example mappings used during development:
@@ -221,17 +278,18 @@ This design decision makes the installation read as a behavioural system rather 
 6. Tested the ultrasonic distance sensor, dual touch sensor, and IMU.
 7. Updated the bridge to match the installed PiDog Python API.
 8. Added behaviour shaping so live robot data felt smooth and legible in TouchDesigner.
-9. Tested the camera separately; the camera was not detected on the current hardware setup and was left as a future extension.
+9. Repaired and tested the PiDog camera.
+10. Adapted the face-tracking example to remove sound-direction input and avoid a `GPIO busy` conflict.
 
 ## Known Limitations
 
-- The PiDog camera was tested but not used in the final live loop because the Raspberry Pi did not detect a camera module during development.
+- The camera works as a separate stream/face-tracking extension, but it is not merged into the TouchDesigner live bridge yet.
 - The sound direction sensor produced a `GPIO busy` error during some tests, so the main live system focuses on distance, touch, and IMU values.
+- The original SunFounder face-tracking example also reads the ears sensor; this repository includes a no-ears variant to avoid that conflict.
 - The TouchDesigner `.toe` file is binary and may not be ideal for GitHub review. For public documentation, screenshots, video, and setup notes are more useful.
 
 ## Future Development
 
-- Repair or reconnect the camera ribbon cable and add face/gaze detection.
 - Send camera-derived values such as `face_present`, `face_x`, and `motion_amount` over OSC.
 - Add bidirectional feedback so TouchDesigner can trigger PiDog LEDs, sounds, or small body actions.
 - Package the TouchDesigner OSC network as a reusable `.tox` component.

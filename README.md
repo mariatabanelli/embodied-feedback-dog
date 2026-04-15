@@ -1,6 +1,6 @@
 # Embodied Feedback Dog
 
-An interactive robotics and real-time visual system using a SunFounder PiDog, Raspberry Pi, OSC, and TouchDesigner. The physical robot acts as a sensing body, while a particle-based Labrador visualises the robot's behavioural condition in real time.
+An interactive robotics and real-time visual system using a PiDog, Raspberry Pi, OSC, and TouchDesigner. The physical robot acts as a sensing body, while a particle-based Labrador visualises the robot's behavioural condition in real time.
 
 Rather than treating a person as a direct trigger for visual effects, the project frames the physical PiDog and the digital particle dog as one feedback system:
 
@@ -32,7 +32,7 @@ Suggested documentation shots:
 ## System Diagram
 
 ```text
-SunFounder PiDog / Raspberry Pi
+PiDog / Raspberry Pi
   ultrasonic distance
   dual touch sensor
   IMU accelerometer + gyroscope
@@ -74,7 +74,7 @@ FBX Labrador particle system
 
 ## Materials And Tools
 
-- SunFounder PiDog
+- PiDog
 - Raspberry Pi, used as the robot-side sensor bridge
 - MacBook or Mac mini running TouchDesigner
 - TouchDesigner
@@ -105,7 +105,7 @@ Utility script for testing PiDog sensors and camera detection on the Raspberry P
 scripts/7_face_track_no_ears.py
 ```
 
-Camera stream and face-tracking demo adapted from the SunFounder face-tracking example. This version removes sound-direction/ears input to avoid `GPIO busy` conflicts while keeping the camera stream and gentle head tracking.
+Camera stream and face-tracking demo adapted from the face-tracking example. This version removes sound-direction/ears input to avoid `GPIO busy` conflicts while keeping the camera stream and gentle head tracking.
 
 ```text
 TouchDesigner_OSC_Setup.md
@@ -190,7 +190,7 @@ The PiDog camera was repaired and tested successfully. Camera detection on the R
 0 : ov5647 [2592x1944 10-bit GBRG]
 ```
 
-The stock SunFounder `7_face_track.py` example started the camera stream, but then hit a `GPIO busy` error because it also uses the ears/sound-direction sensor. To keep the camera test stable, this repository includes a simplified version:
+The stock `7_face_track.py` example started the camera stream, but then hit a `GPIO busy` error because it also uses the ears/sound-direction sensor. To keep the camera test stable, this repository includes a simplified version:
 
 ```text
 scripts/7_face_track_no_ears.py
@@ -311,4 +311,4 @@ This design decision makes the installation read as a behavioural system rather 
 
 Created by Maria Tabanelli.
 
-Built with SunFounder PiDog, Raspberry Pi, Python, OSC, and TouchDesigner.
+Built with AI PiDog, Raspberry Pi, Python, OSC, and TouchDesigner.
